@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const dataContainer = document.getElementById('dataContainer');
 
     // IMPORTANT: Replace this URL with your actual Render backend URL after deployment
-    const backendUrl = 'https://hello-world-website-nnmy.onrender.com/api/data'; // Default placeholder
+    const backendUrl = 'https://hello-world-website-nnmy.onrender.com/api/data';
 
     fetchButton.addEventListener('click', async () => {
         dataContainer.textContent = 'Loading...';
