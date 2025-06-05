@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: python-backend-service # You can name this whatever you like
+    env: python
+    plan: free # Or your desired plan
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python main.py"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9 # Or your desired Python version
+      - key: PORT
+        value: 10000 # Render typically uses port 10000 for web services
