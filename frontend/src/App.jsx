@@ -4,7 +4,7 @@ function App() {
   const [message, setMessage] = useState("Lade...");
 
   useEffect(() => {
-    fetch('https://<DEIN-BACKEND>.railway.app/api')
+    fetch('https://hello-world-website-production.up.railway.app/api')
       .then(res => res.json())
       .then(data => setMessage(data.message))
       .catch(err => setMessage("Fehler beim Laden"));
