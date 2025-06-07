@@ -1,5 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+
 function App() {
   const [message, setMessage] = useState("Lade...");
   const [newEntryContent, setNewEntryContent] = useState("");
@@ -10,28 +12,45 @@ function App() {
   const fetchEntries = useCallback(async () => {
     setFetchEntriesError(null);
     try {
-      const response = await fetch('/api/entries');
+      const response = await fetch(`${API_BASE_URL}/api/entries`);
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorText = await response.text();
+        console.error('Error fetching entries - Status:', response.status, 'Response:', errorText);
+        setFetchEntriesError(`Fehler ${response.status} beim Laden der Einträge.`); // User message can be simpler
+        throw new Error(`HTTP error ${response.status}: ${errorText}`);
       }
       const data = await response.json();
       setEntries(data);
     } catch (error) {
-      console.error("Error fetching entries:", error);
-      setFetchEntriesError("Fehler beim Laden der Einträge.");
-      // Optionally set entries to empty array on error
-      // setEntries([]);
+      // Log the full error object, including the custom message from the throw above if it's an HTTP error
+      console.error('Error fetching entries:', error);
+      // If setFetchEntriesError wasn't set before for an HTTP error, set a generic one here.
+      if (!fetchEntriesError) { // Avoid overwriting specific HTTP error message
+        setFetchEntriesError("Fehler beim Laden der Einträge.");
+      }
     }
-  }, []); // Empty dependency array means this function is memoized and doesn't change
+  }, []); // Empty dependency array: fetchEntries is stable and doesn't depend on component state/props
 
   useEffect(() => {
     // Fetch initial message
-    fetch('/api') // Changed to relative path
-      .then(res => res.json())
+    fetch(`${API_BASE_URL}/api`)
+      .then(res => {
+        if (!res.ok) {
+          return res.text().then(text => {
+            console.error('Error fetching initial message - Status:', res.status, 'Response:', text);
+            setMessage(`Fehler: ${res.status} - ${text || 'Serverfehler'}`);
+            throw new Error(`HTTP error ${res.status}: ${text}`); // To be caught by .catch
+          });
+        }
+        return res.json();
+      })
       .then(data => setMessage(data.message))
-      .catch(err => {
-        console.error("Error fetching initial message:", err);
-        setMessage("Fehler beim Laden der initialen Nachricht");
+      .catch(error => { // Catches network errors and errors thrown above
+        console.error('Error fetching initial message:', error);
+        // If setMessage hasn't been updated with a specific error, set a generic one.
+        if (message === "Lade...") { // Check if message is still in initial loading state
+           setMessage("Fehler beim Laden der initialen Nachricht.");
+        }
       });
 
     // Fetch entries
@@ -48,7 +67,7 @@ function App() {
     }
 
     try {
-      const response = await fetch('/api/entries', {
+      const response = await fetch(`${API_BASE_URL}/api/entries`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -61,12 +80,18 @@ function App() {
         console.log("Entry created successfully!");
         fetchEntries(); // Refresh entries list
       } else {
-        const errorData = await response.json().catch(() => ({ error: "Failed to parse error response" }));
-        setSubmissionError(errorData.error || `Error ${response.status}: Failed to create entry.`);
+        const errorText = await response.text();
+        console.error('Error creating entry - Status:', response.status, 'Response:', errorText);
+        try {
+          const parsedError = JSON.parse(errorText);
+          setSubmissionError(parsedError.error || `Fehler ${response.status}: ${errorText}`);
+        } catch (e) {
+          setSubmissionError(`Fehler ${response.status}: ${errorText || 'Konnte Eintrag nicht erstellen'}`);
+        }
       }
     } catch (error) {
-      console.error("Network or other error creating entry:", error);
-      setSubmissionError("Network error. Please try again.");
+      console.error('Error creating entry (network/fetch):', error);
+      setSubmissionError("Netzwerkfehler oder anderer Fehler beim Erstellen des Eintrags. Bitte versuchen Sie es erneut.");
     }
   };
 
