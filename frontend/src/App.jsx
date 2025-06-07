@@ -8,6 +8,7 @@ function App() {
   const [submissionError, setSubmissionError] = useState(null);
   const [entries, setEntries] = useState([]);
   const [fetchEntriesError, setFetchEntriesError] = useState(null);
+  const [selectedDb, setSelectedDb] = useState('db1'); // 'db1' or 'db2'
 
   const fetchEntries = useCallback(async () => {
     setFetchEntriesError(null);
@@ -72,7 +73,7 @@ function App() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ content: newEntryContent }),
+        body: JSON.stringify({ content: newEntryContent, dbIdentifier: selectedDb }),
       });
 
       if (response.status === 201) {
@@ -102,6 +103,26 @@ function App() {
       <h2>Create New Entry</h2>
       <form onSubmit={handleCreateEntry}>
         <div>
+          <label>
+            <input
+              type="radio"
+              value="db1"
+              checked={selectedDb === 'db1'}
+              onChange={(e) => setSelectedDb(e.target.value)}
+            />
+            Database 1
+          </label>
+          <label style={{ marginLeft: '10px' }}>
+            <input
+              type="radio"
+              value="db2"
+              checked={selectedDb === 'db2'}
+              onChange={(e) => setSelectedDb(e.target.value)}
+            />
+            Database 2
+          </label>
+        </div>
+        <div>
           <input
             type="text"
             value={newEntryContent}
@@ -120,8 +141,8 @@ function App() {
       ) : (
         <ul>
           {entries.map(entry => (
-            <li key={entry.id}>
-              ID: {entry.id} - Content: {entry.content}
+            <li key={`${entry.source_db}-${entry.id}`}>
+              ID: {entry.id} - Source: {entry.source_db === 'db1' ? 'Database 1' : 'Database 2'} - Content: {entry.content}
             </li>
           ))}
         </ul>

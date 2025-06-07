@@ -13,6 +13,24 @@ Dies ist eine einfache Fullstack-Webanwendung.
 
 ---
 
+## ⚙️ Setup and Configuration
+
+This application requires a backend setup with connection to two PostgreSQL databases.
+
+### Environment Variables
+
+The backend requires the following environment variables to be set. You can use the `backend/.env.example` file as a template by creating a `.env` file in the `backend` directory.
+
+- `DATABASE_URL_1`: The connection string for the first PostgreSQL database.
+  - Example: `postgresql://user:password@host:port/database_name_1`
+- `DATABASE_URL_2`: The connection string for the second PostgreSQL database.
+  - Example: `postgresql://user:password@host:port/database_name_2`
+- `PORT`: (Optional) The port on which the backend server will run. Defaults to 3000.
+
+The `backend/.env.example` file has been updated to reflect these requirements.
+
+---
+
 ## 🧰 Technologien
 
 Dieses Projekt verwendet:
