@@ -2,6 +2,12 @@ import { useEffect, useState, useCallback } from 'react';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
+const DB1_TABLE_OPTIONS = [
+  { id: 't1', label: 'Table 1' },
+  { id: 't2', label: 'Table 2' },
+  { id: 't3', label: 'Table 3' },
+];
+
 function App() {
   const [message, setMessage] = useState("Lade...");
   const [newEntryContent, setNewEntryContent] = useState("");
@@ -9,6 +15,7 @@ function App() {
   const [entries, setEntries] = useState([]);
   const [fetchEntriesError, setFetchEntriesError] = useState(null);
   const [selectedDb, setSelectedDb] = useState('db1'); // 'db1' or 'db2'
+  const [selectedTableDb1, setSelectedTableDb1] = useState('t1'); // 't1', 't2', or 't3'
 
   const fetchEntries = useCallback(async () => {
     setFetchEntriesError(null);
@@ -68,12 +75,17 @@ function App() {
     }
 
     try {
+      let requestBody = { content: newEntryContent, dbIdentifier: selectedDb };
+      if (selectedDb === 'db1') {
+        requestBody.tableIdentifier = selectedTableDb1;
+      }
+
       const response = await fetch(`${API_BASE_URL}/api/entries`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ content: newEntryContent, dbIdentifier: selectedDb }),
+        body: JSON.stringify(requestBody),
       });
 
       if (response.status === 201) {
@@ -122,6 +134,24 @@ function App() {
             Database 2
           </label>
         </div>
+
+        {selectedDb === 'db1' && (
+          <div style={{ marginTop: '10px', marginBottom: '10px' }}>
+            <p style={{ margin: 0, marginBottom: '5px', fontWeight: 'bold' }}>Select Table for Database 1:</p>
+            {DB1_TABLE_OPTIONS.map(table => (
+              <label key={table.id} style={{ marginRight: '10px', fontWeight: 'normal' }}>
+                <input
+                  type="radio"
+                  value={table.id}
+                  checked={selectedTableDb1 === table.id}
+                  onChange={(e) => setSelectedTableDb1(e.target.value)}
+                />
+                {table.label}
+              </label>
+            ))}
+          </div>
+        )}
+
         <div>
           <input
             type="text"
@@ -140,11 +170,21 @@ function App() {
         <p>No entries yet.</p>
       ) : (
         <ul>
-          {entries.map(entry => (
-            <li key={`${entry.source_db}-${entry.id}`}>
-              ID: {entry.id} - Source: {entry.source_db === 'db1' ? 'Database 1' : 'Database 2'} - Content: {entry.content}
-            </li>
-          ))}
+          {entries.map(entry => {
+            let sourceInfo = `Source: ${entry.source_db === 'db1' ? 'Database 1' : 'Database 2'}`;
+            if (entry.source_db === 'db1' && entry.source_table) {
+              const tableLabel = DB1_TABLE_OPTIONS.find(opt => opt.id === entry.source_table)?.label || entry.source_table;
+              sourceInfo += ` - ${tableLabel}`;
+            } else if (entry.source_db === 'db2' && entry.source_table) { // Optional: Display table for DB2 if needed
+              // sourceInfo += ` - Table: ${entry.source_table}`; // e.g. 'default'
+            }
+
+            return (
+              <li key={`${entry.source_db}-${entry.source_table || 'default'}-${entry.id}`}>
+                ID: {entry.id} - {sourceInfo} - Content: {entry.content}
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>
