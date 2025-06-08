@@ -31,7 +31,7 @@ Das Backend benötigt folgende Umgebungsvariablen. Verwende `backend/.env.exampl
 
 - `PORT`: (Optional) Der Port, auf dem der Backend-Server läuft (Standard: `3000`)
 
-#### 🎨 Frontend (Vite)
+#### 🎨 Frontend
 
 Das Frontend verwendet `VITE_API_BASE_URL`, um die URL des Backends zu konfigurieren.
 
