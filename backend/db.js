@@ -1,5 +1,4 @@
-import pkg from 'pg';
-const { Pool } = pkg;
+const { Pool } = require('pg');
 
 const pool1 = new Pool({
   connectionString: process.env.DATABASE_URL_1,
@@ -15,4 +14,4 @@ const pool2 = new Pool({
   }
 });
 
-export { pool1, pool2 };
+module.exports = { pool1, pool2 };
