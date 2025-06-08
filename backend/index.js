@@ -13,6 +13,10 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json()); // Middleware to parse JSON request bodies
 
+app.get('/', (req, res) => {
+  res.send('hallo vom backend');
+});
+
 app.get("/api", async (req, res) => {
   try {
     const result = await pool.query("SELECT NOW()");
