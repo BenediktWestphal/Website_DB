@@ -13,30 +13,21 @@ Dies ist eine einfache Fullstack-Webanwendung.
 
 ---
 
-
 ## ⚙️ Setup and Configuration
 
 This application requires a backend setup with connection to two PostgreSQL databases.
 
 ### Environment Variables
 
-#### 🔧 Backend
+The backend requires the following environment variables to be set. You can use the `backend/.env.example` file as a template by creating a `.env` file in the `backend` directory.
 
-Das Backend benötigt folgende Umgebungsvariablen. Verwende `backend/.env.example` als Vorlage, indem du eine `.env`-Datei im `backend/`-Verzeichnis erstellst:
+- `DATABASE_URL_1`: The connection string for the first PostgreSQL database.
+  - Example: `postgresql://user:password@host:port/database_name_1`
+- `DATABASE_URL_2`: The connection string for the second PostgreSQL database.
+  - Example: `postgresql://user:password@host:port/database_name_2`
+- `PORT`: (Optional) The port on which the backend server will run. Defaults to 3000.
 
-- `DATABASE_URL_1`: Verbindungsstring für die erste PostgreSQL-Datenbank.  
-  Beispiel: `postgresql://user:password@host:port/database_name_1`
-
-- `DATABASE_URL_2`: Verbindungsstring für die zweite PostgreSQL-Datenbank.  
-  Beispiel: `postgresql://user:password@host:port/database_name_2`
-
-- `PORT`: (Optional) Der Port, auf dem der Backend-Server läuft (Standard: `3000`)
-
-#### 🎨 Frontend
-
-Das Frontend verwendet `VITE_API_BASE_URL`, um die URL des Backends zu konfigurieren.
-
-- `VITE_API_BASE_URL`: Die Basis-URL des Backends (z. B. `https://mein-backend.up.railway.app`)
+The `backend/.env.example` file has been updated to reflect these requirements.
 
 ---
 
