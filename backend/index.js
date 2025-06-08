@@ -6,8 +6,7 @@ const DB1_TABLE_IDENTIFIERS = ['t1', 't2', 't3'];
 const DB1_TABLE_NAMES = {
   't1': 'entries_db1_t1',
   't2': 'entries_db1_t2',
-  't3': 'entries_db1_t3',
-  't4': 'entries'
+  't3': 'entries_db1_t3'
 };
 const DB2_TABLE_NAME = 'entries_db2_default';
 
