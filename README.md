@@ -13,6 +13,7 @@ Dies ist eine einfache Fullstack-Webanwendung.
 
 ---
 
+
 ## ⚙️ Setup and Configuration
 
 This application requires a backend setup with connection to two PostgreSQL databases.
