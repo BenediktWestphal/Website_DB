@@ -16,6 +16,10 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json()); // Middleware to parse JSON request bodies
 
+app.get('/', (req, res) => {
+  res.send('hallo vom backend');
+});
+
 app.get("/api", async (req, res) => {
   let db1Connected = false;
   let db2Connected = false;
